@@ -1,0 +1,35 @@
+<!doctype html>
+<script src="https://unpkg.com/@strudel/web@1.0.3"></script>
+
+<button id="play">play</button>
+<button id="stop">stop</button>
+
+<script>
+  const strudelReady = initStrudel();
+
+  const loadSamples = async () => {
+    await strudelReady;
+    await samples('github:tidalcycles/dirt-samples');
+  };
+
+  const patch = `
+    note('[c d?0.8 e?0.8 f?0.8 g?0.8 a?0.8 b?0.8 c4?0.8]*4')
+      .add(-12)
+      .sound("newnotes")
+      .jux(rev)
+      .room(0.25)
+      .delay(0.25)
+      .delayt(0.125)
+      .play()
+  `;
+
+  const playPattern = async () => {
+    await loadSamples();
+    window.evaluate?.(patch) ?? window.evalStrudel?.(patch) ?? (0, eval)(patch);
+  };
+
+  document.getElementById('play').onclick = playPattern;
+  document.getElementById('stop').onclick = () => hush();
+
+  window.addEventListener('load', playPattern);
+</script>
