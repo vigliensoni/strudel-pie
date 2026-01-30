@@ -3,6 +3,8 @@
 
 <button id="play">play</button>
 <button id="stop">stop</button>
+<button id="toggle-bd">mute bd</button>
+<button id="toggle-mel">mute melodies</button>
 
 <script>
   const strudelReady = initStrudel();
@@ -12,24 +14,44 @@
     await samples('github:tidalcycles/dirt-samples');
   };
 
-  const patch = `
-    note('[c d?0.8 e?0.8 f?0.8 g?0.8 a?0.8 b?0.8 c4?0.8]*4')
+  let bdMuted = false;
+  let melMuted = false;
+
+  const buildPatch = () => `
+  stack(
+    sound("808bd:6*16")
+      .speed(saw.range(1,5).slow(1))
+      .gain(${bdMuted ? 0 : 1}),
+    note("[c d?0.8 e?0.8 f?0.8 g?0.8 a?0.8 b?0.8 c4?0.8]*4")
       .add(-12)
-      .sound("newnotes")
+      .sound('newnotes')
       .jux(rev)
       .room(0.25)
       .delay(0.25)
       .delayt(0.125)
-      .play()
+      .gain(${melMuted ? 0 : 0.125})
+  ).play()
   `;
 
   const playPattern = async () => {
     await loadSamples();
+    hush();
+    const patch = buildPatch();
     window.evaluate?.(patch) ?? window.evalStrudel?.(patch) ?? (0, eval)(patch);
   };
 
   document.getElementById('play').onclick = playPattern;
   document.getElementById('stop').onclick = () => hush();
+  document.getElementById('toggle-bd').onclick = () => {
+    bdMuted = !bdMuted;
+    document.getElementById('toggle-bd').textContent = bdMuted ? 'unmute bd' : 'mute bd';
+    playPattern();
+  };
+  document.getElementById('toggle-mel').onclick = () => {
+    melMuted = !melMuted;
+    document.getElementById('toggle-mel').textContent = melMuted ? 'unmute melodies' : 'mute melodies';
+    playPattern();
+  };
 
   window.addEventListener('load', playPattern);
 </script>
