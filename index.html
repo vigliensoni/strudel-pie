@@ -21,7 +21,9 @@
   stack(
     sound("808bd:6*16")
       .speed(saw.range(1,5).slow(1))
-      .gain(${bdMuted ? 0 : 1}),
+      .gain(${bdMuted ? 0 : 0.5})
+      .every(8, x=>x.hurry(2).gain(0.125).slow(2)),
+    sound("[~ 808sd:2]!2"),
     note("[c d?0.8 e?0.8 f?0.8 g?0.8 a?0.8 b?0.8 c4?0.8]*4")
       .add(-12)
       .sound('newnotes')
