@@ -1,59 +1,46 @@
 <!doctype html>
 <script src="https://unpkg.com/@strudel/web@1.0.3"></script>
 
-<button id="play">play</button>
-<button id="stop">stop</button>
-<button id="toggle-bd">mute bd</button>
-<button id="toggle-mel">mute melodies</button>
+<style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
 
-<script>
-  const strudelReady = initStrudel();
+  body {
+    position: relative;
+    background: #0f1115;
+    color: #e8e8e8;
+    font-family: "SF Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+  }
 
-  const loadSamples = async () => {
-    await strudelReady;
-    await samples('github:tidalcycles/dirt-samples');
-  };
+  .floating-button {
+    position: absolute;
+    padding: 10px 16px;
+    border: 1px solid #333b4a;
+    border-radius: 999px;
+    background: #1b2230;
+    color: #e8e8e8;
+    cursor: pointer;
+    user-select: none;
+  }
 
-  let bdMuted = false;
-  let melMuted = false;
+  .floating-button.is-muted {
+    background: #8f1b1b;
+    border-color: #bf3a3a;
+    color: #ffe6e6;
+  }
+</style>
 
-  const buildPatch = () => `
-  stack(
-    sound("808bd:6*16")
-      .speed(saw.range(1,5).slow(1))
-      .gain(${bdMuted ? 0 : 0.5})
-      .every(8, x=>x.hurry(2).gain(0.125).slow(2)),
-    sound("[~ 808sd:2]!2"),
-    note("[c d?0.8 e?0.8 f?0.8 g?0.8 a?0.8 b?0.8 c4?0.8]*4")
-      .add(-12)
-      .sound('newnotes')
-      .jux(rev)
-      .room(0.25)
-      .delay(0.25)
-      .delayt(0.125)
-      .gain(${melMuted ? 0 : 0.125})
-  ).play()
-  `;
+<button id="play" class="floating-button">play</button>
+<button id="stop" class="floating-button">stop</button>
+<button id="toggle-bd" class="floating-button">mute bd</button>
+<button id="toggle-mel" class="floating-button">mute melodies</button>
 
-  const playPattern = async () => {
-    await loadSamples();
-    hush();
-    const patch = buildPatch();
-    window.evaluate?.(patch) ?? window.evalStrudel?.(patch) ?? (0, eval)(patch);
-  };
-
-  document.getElementById('play').onclick = playPattern;
-  document.getElementById('stop').onclick = () => hush();
-  document.getElementById('toggle-bd').onclick = () => {
-    bdMuted = !bdMuted;
-    document.getElementById('toggle-bd').textContent = bdMuted ? 'unmute bd' : 'mute bd';
-    playPattern();
-  };
-  document.getElementById('toggle-mel').onclick = () => {
-    melMuted = !melMuted;
-    document.getElementById('toggle-mel').textContent = melMuted ? 'unmute melodies' : 'mute melodies';
-    playPattern();
-  };
-
-  window.addEventListener('load', playPattern);
-</script>
+<script src="patch.js"></script>
+<script src="app.js"></script>
