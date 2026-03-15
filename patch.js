@@ -7,7 +7,7 @@ const loadSamples = async () => {
 
 let bdMuted = false;
 let melMuted = false;
-let currentCps = 1;
+let currentCps = 0.03;
 
 const buildPatch = () => `
   setcps(${currentCps})

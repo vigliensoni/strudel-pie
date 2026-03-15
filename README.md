@@ -36,6 +36,7 @@ window.strudelControls.setTempo(0.5)   // set tempo (cps)
 
 - [Strudel Web](https://strudel.cc) v1.3.0 (via unpkg CDN)
 - [Tidal Cycles dirt-samples](https://github.com/tidalcycles/Dirt-Samples) (loaded automatically)
+- [Hydra Synth](https://hydra.ojack.xyz) (via unpkg CDN) — runs isolated in `hydra.html` to avoid global namespace conflicts with Strudel
 
 ## License
 
